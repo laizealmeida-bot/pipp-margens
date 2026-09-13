@@ -1,6 +1,6 @@
 # PIPP-Margens
 
-Aplicativo offline/PWA do PIPP-Margens – Protocolo de Indicadores de Políticas Públicas em Contextos Periféricos.
+Aplicativo offline/PWA do PIPP-Margens – Protocolo de Indicadores de Práticas Institucionais em Contextos Periféricos.
 
 ## Arquivos
 
