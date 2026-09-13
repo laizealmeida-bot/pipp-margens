@@ -1,0 +1,725 @@
+<!-- PIPP-Margens PWA - Autoria: Laize Almeida de Oliveira -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIPP-Margens | App Profissional Offline</title>
+<style>
+:root{
+  --bg:#f3f6fb; --panel:#ffffff; --ink:#1f2937; --muted:#64748b; --blue:#1d4ed8; --blue2:#2563eb;
+  --green:#16a34a; --yellow:#ca8a04; --red:#dc2626; --purple:#7c3aed; --line:#dbe3ef; --soft:#eef4ff;
+  --shadow:0 10px 28px rgba(15,23,42,.08);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Segoe UI,Arial,sans-serif;color:var(--ink)}
+header{background:linear-gradient(135deg,#0f172a,#1d4ed8);color:#fff;padding:26px 32px;box-shadow:var(--shadow)}
+header h1{margin:0;font-size:26px;letter-spacing:.3px}
+header p{margin:8px 0 0;color:#dbeafe;max-width:1080px;line-height:1.45}
+nav{display:flex;gap:8px;flex-wrap:wrap;background:#fff;padding:12px 22px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button,.btn{border:none;background:#e8eef9;color:#0f172a;padding:10px 14px;border-radius:12px;font-weight:700;cursor:pointer;transition:.15s}
+nav button.active, .btn.primary{background:var(--blue2);color:#fff}
+.btn.green{background:var(--green);color:#fff}.btn.red{background:var(--red);color:#fff}.btn.purple{background:var(--purple);color:#fff}
+main{padding:22px;max-width:1360px;margin:0 auto}
+.section{display:none}.section.active{display:block}
+.grid{display:grid;gap:16px}
+.grid.cards{grid-template-columns:repeat(4,minmax(180px,1fr))}
+.grid.two{grid-template-columns:1.1fr .9fr}
+.grid.three{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);margin-bottom:16px}
+.card h2,.card h3{margin:0 0 12px}
+.metric{min-height:130px;position:relative;overflow:hidden}
+.metric:before{content:"";position:absolute;right:-24px;top:-24px;width:110px;height:110px;border-radius:50%;background:rgba(37,99,235,.09)}
+.label{color:var(--muted);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.value{font-size:34px;font-weight:900;margin-top:8px}
+.sub{color:var(--muted);font-size:14px;margin-top:8px;line-height:1.35}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font:inherit}
+textarea{min-height:90px;resize:vertical}
+.formrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:12px}
+.dimrow{display:grid;grid-template-columns:1.2fr 110px 1.8fr;gap:12px;align-items:start;margin:12px 0;padding:12px;border:1px solid var(--line);border-radius:16px;background:#fbfdff}
+.dimtitle{font-weight:900}
+.hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.35}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden}
+th,td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:14px;vertical-align:top}
+th{background:#eff6ff;color:#0f172a}
+tr:hover{background:#f8fbff}
+.badge{display:inline-block;border-radius:999px;padding:5px 9px;font-size:12px;font-weight:900}
+.b-red{background:#fee2e2;color:#991b1b}.b-yellow{background:#fef3c7;color:#92400e}.b-green{background:#dcfce7;color:#166534}.b-blue{background:#dbeafe;color:#1e40af}.b-purple{background:#ede9fe;color:#5b21b6}
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.legend div{padding:12px;border-radius:14px;border:1px solid var(--line);background:#fff}
+.small{font-size:12px;color:var(--muted)}
+canvas{width:100%;max-width:100%;background:#fff;border-radius:16px;border:1px solid var(--line)}
+.report{white-space:pre-wrap;line-height:1.5;background:#fbfdff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.footer-note{margin-top:16px;color:var(--muted);font-size:12px}
+.notice{background:#eff6ff;border:1px solid #bfdbfe;color:#1e3a8a;padding:12px;border-radius:14px;margin-bottom:16px}
+.priority-alta{background:#fee2e2;color:#991b1b}
+.priority-media{background:#fef3c7;color:#92400e}
+.priority-baixa{background:#dcfce7;color:#166534}
+
+.stepgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:12px}
+.step{background:#fbfdff;border:1px solid var(--line);border-radius:18px;padding:15px;box-shadow:0 6px 18px rgba(15,23,42,.05)}
+.step b{display:block;font-size:15px;margin-bottom:6px;color:#0f172a}.step span{font-size:13px;color:var(--muted);line-height:1.35}
+.kpi{display:flex;align-items:center;gap:10px}.ico{font-size:24px;background:#eff6ff;border-radius:14px;padding:9px;display:inline-flex;align-items:center;justify-content:center}
+.rulebox{background:#fff7ed;border:1px solid #fed7aa;color:#7c2d12;border-radius:14px;padding:12px;margin:12px 0;line-height:1.45}
+.backupbox{background:#f0fdf4;border:1px solid #bbf7d0;color:#14532d;border-radius:14px;padding:12px;margin:12px 0;line-height:1.45}
+
+@media(max-width:900px){.grid.cards,.grid.two,.grid.three,.formrow{grid-template-columns:1fr}.dimrow{grid-template-columns:1fr}.value{font-size:28px}nav{position:static}.legend{grid-template-columns:1fr}.stepgrid{grid-template-columns:1fr}}
+@media print{nav,.actions,.no-print{display:none!important}body{background:#fff}main{max-width:none;padding:0}.section{display:block}.card{box-shadow:none;break-inside:avoid}header{box-shadow:none}}
+
+#lockScreen{
+  position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#0f172a,#1d4ed8);
+  display:flex; align-items:center; justify-content:center; padding:24px;
+}
+.lock-card{
+  width:min(520px,100%); background:#fff; border-radius:24px; padding:28px; box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+.lock-card h2{margin:0 0 8px;color:#0f172a}
+.lock-card p{color:#64748b;line-height:1.45}
+.lock-warning{font-size:12px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;border-radius:14px;padding:12px;margin:14px 0}
+.author-fixed{
+  position:fixed;bottom:10px;right:10px;z-index:20;background:rgba(255,255,255,.92);
+  border:1px solid #dbe3ef;border-radius:999px;padding:7px 10px;font-size:11px;color:#475569;box-shadow:0 6px 18px rgba(15,23,42,.08)
+}
+.copyright-box{
+  margin-top:18px;padding:14px;border-top:1px solid #dbe3ef;font-size:12px;color:#475569;background:#fbfdff;border-radius:14px
+}
+
+</style>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1d4ed8">
+</head>
+<body>
+
+<div id="lockScreen">
+  <div class="lock-card">
+    <h2>PIPP-Margens</h2>
+    <p><b>Acesso protegido</b></p>
+    <p>Produto técnico-científico de autoria de <b>Laize Almeida de Oliveira</b>.</p>
+    <div class="lock-warning">
+      É vedada a reprodução, comercialização, distribuição ou adaptação total/parcial sem autorização expressa da autora.
+      Uso permitido apenas para fins acadêmicos, institucionais e de pesquisa, mediante citação.
+    </div>
+    <label>Senha de acesso
+      <input id="accessPassword" type="password" placeholder="Digite a senha">
+    </label>
+    <div class="actions">
+      <button class="btn primary" onclick="unlockApp()">Entrar</button>
+    </div>
+    <p class="small">Senha padrão: <b>pipp2026</b>. Você pode alterar no código, na variável <code>APP_PASSWORD</code>.</p>
+  </div>
+</div>
+
+<header>
+<h1>PIPP-Margens | Aplicativo Profissional de Diagnóstico Territorial</h1>
+<p>Versão offline e autônoma do Protocolo de Indicadores de Práticas Institucionais em Contextos Periféricos. Calcula ICIP, compila registros, compara territórios, identifica prioridades automáticas, gera dashboard, gráficos, insights e relatório executivo.</p>
+</header>
+
+<nav>
+<button class="tab active" data-tab="guia">Início</button>
+<button class="tab" data-tab="dashboard">Dashboard</button>
+<button class="tab" data-tab="aplicacao">Aplicação</button>
+<button class="tab" data-tab="registros">Registros</button>
+<button class="tab" data-tab="territorios">Comparação Territorial</button>
+<button class="tab" data-tab="relatorio">Relatório Executivo</button>
+<button class="tab" data-tab="metodo">Método PIPP</button>
+</nav>
+
+<main>
+
+<section id="guia" class="section active">
+  <div class="card">
+    <h2>Como usar o PIPP-Margens em 4 passos</h2>
+    <p class="sub">Este aplicativo funciona offline, em arquivo único HTML, e foi criado para apoiar diagnóstico territorial, análise por dimensão, comparação entre territórios e definição de prioridades de intervenção.</p>
+    <div class="stepgrid">
+      <div class="step"><div class="kpi"><span class="ico">📝</span><b>1. Registre a aplicação</b></div><span>Insira território, localidade, participante, fonte dos dados e justificativas qualitativas para cada dimensão.</span></div>
+      <div class="step"><div class="kpi"><span class="ico">📊</span><b>2. Gere o diagnóstico</b></div><span>O sistema calcula o ICIP, médias por dimensão, pontos fortes, pontos críticos e insights automáticos.</span></div>
+      <div class="step"><div class="kpi"><span class="ico">🌎</span><b>3. Compare territórios</b></div><span>A aba de comparação territorial organiza registros por território, cria ranking e indica prioridade automática.</span></div>
+      <div class="step"><div class="kpi"><span class="ico">📄</span><b>4. Exporte e salve</b></div><span>Use JSON para backup dos dados e CSV para análise externa. O relatório pode ser copiado ou salvo em PDF.</span></div>
+    </div>
+    <div class="backupbox"><b>Importante:</b> os dados ficam salvos no navegador deste computador. Para não perder informações, exporte periodicamente o arquivo JSON na aba “Registros”.</div>
+  </div>
+  <div class="grid two">
+    <div class="card"><h3>O que o app entrega</h3><p>• ICIP geral e por território<br>• Média, mínimo, máximo e variação por dimensão<br>• Radar e comparação visual<br>• Ranking territorial e prioridade automática<br>• Relatório executivo com leitura geral e análise por território</p></div>
+    <div class="card"><h3>Regra da prioridade automática</h3><p>A prioridade combina o ICIP médio e a heterogeneidade interna do território:</p><div class="rulebox"><b>Alta:</b> ICIP até 2,5.<br><b>Média:</b> ICIP até 3,5 ou alta heterogeneidade entre registros.<br><b>Baixa:</b> ICIP superior a 3,5, com menor heterogeneidade.</div><p class="sub">A prioridade é apoio à decisão e deve ser interpretada junto às evidências qualitativas.</p></div>
+  </div>
+</section>
+
+<section id="dashboard" class="section">
+  <div class="notice"><b>Leitura geral:</b> o painel consolida todos os registros salvos. Para análise específica por território, acesse “Comparação Territorial”.</div>
+  <div class="grid cards">
+    <div class="card metric"><div class="label">ICIP Geral</div><div class="value" id="mIcip">0,00</div><div class="sub" id="mClass">Sem registros salvos</div></div>
+    <div class="card metric"><div class="label">Ponto Forte Geral</div><div class="value" id="mForte" style="font-size:20px">—</div><div class="sub">Dimensão com maior média</div></div>
+    <div class="card metric"><div class="label">Ponto Crítico Geral</div><div class="value" id="mCritico" style="font-size:20px">—</div><div class="sub">Dimensão com menor média</div></div>
+    <div class="card metric"><div class="label">Registros</div><div class="value" id="mRegs">0</div><div class="sub">Entrevistas/grupos/territórios salvos</div></div>
+  </div>
+
+  <div class="grid two" style="margin-top:16px">
+    <div class="card"><h3>Gráfico radar das dimensões</h3><canvas id="radar" width="620" height="430"></canvas></div>
+    <div class="card"><h3>Comparação entre dimensões</h3><canvas id="bars" width="620" height="430"></canvas></div>
+  </div>
+
+  <div class="grid two" style="margin-top:16px">
+    <div class="card"><h3>Insights automáticos</h3><div id="insights" class="report">Cadastre registros para gerar insights.</div></div>
+    <div class="card"><h3>Legenda interpretativa</h3><div class="legend">
+      <div><span class="badge b-red">1 a 2</span><br><b>Baixa capacidade</b><br><span class="small">Fragilidade institucional, dependência externa e pouca ação coletiva.</span></div>
+      <div><span class="badge b-yellow">2 a 3</span><br><b>Emergente</b><br><span class="small">Iniciativas pontuais, instáveis e descontínuas.</span></div>
+      <div><span class="badge b-blue">3 a 4</span><br><b>Em consolidação</b><br><span class="small">Práticas mais consistentes, com desafios.</span></div>
+      <div><span class="badge b-green">4 a 5</span><br><b>Transformadora</b><br><span class="small">Forte articulação, autonomia, reconhecimento e reflexividade.</span></div>
+    </div></div>
+  </div>
+</section>
+
+<section id="aplicacao" class="section">
+  <div class="card"><h2>Aplicação do PIPP-Margens</h2>
+    <div class="formrow">
+      <label>Território<input id="territorio" placeholder="Ex.: Marajó, Guajará, Carajás"></label>
+      <label>Município/Comunidade<input id="localidade" placeholder="Ex.: Muaná"></label>
+      <label>Data<input id="data" type="date"></label>
+    </div>
+    <div class="formrow">
+      <label>Entrevistada/Grupo<input id="participante" placeholder="Ex.: E01 ou Grupo focal"></label>
+      <label>Responsável pela aplicação<input id="responsavel" placeholder="Nome da equipe/pesquisadora"></label>
+      <label>Fonte<select id="fonte"><option>Entrevista</option><option>Grupo focal</option><option>Observação</option><option>Análise documental</option><option>Triangulação</option></select></label>
+    </div>
+    <div id="dims"></div>
+    <label>Observações gerais<textarea id="obs" placeholder="Registre evidências gerais, contexto territorial e observações importantes."></textarea></label>
+    <div class="actions">
+      <button class="btn primary" onclick="salvarRegistro()">Salvar registro</button>
+      <button class="btn" onclick="limparFormulario()">Limpar formulário</button>
+      <button class="btn purple" onclick="preencherExemplo()">Preencher exemplo</button>
+    </div>
+  </div>
+</section>
+
+<section id="registros" class="section">
+  <div class="card"><h2>Registros salvos</h2>
+    <div class="backupbox"><b>Backup recomendado:</b> clique em “Exportar JSON” para guardar todos os registros e poder importar depois em outro computador ou navegador.</div>
+    <div class="actions">
+      <button class="btn green" onclick="exportarJSON()">Exportar JSON</button>
+      <button class="btn green" onclick="exportarCSV()">Exportar CSV</button>
+      <label class="btn">Importar JSON<input type="file" id="importFile" accept=".json" style="display:none" onchange="importarJSON(event)"></label>
+      <button class="btn red" onclick="apagarTudo()">Apagar tudo</button>
+    </div>
+    <div style="overflow:auto;margin-top:14px"><table>
+      <thead><tr><th>#</th><th>Data</th><th>Território</th><th>Localidade</th><th>Participante</th><th>ICIP</th><th>Classificação</th><th>Ações</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table></div>
+  </div>
+</section>
+
+<section id="territorios" class="section">
+  <div class="card"><h2>Comparação Territorial e Prioridade Automática</h2>
+    <p class="sub">Esta seção compila os registros por território, calcula o ICIP médio, identifica pontos fortes e críticos e gera prioridade automática de intervenção.</p>
+    <div class="rulebox"><b>Regra de prioridade:</b> prioridade alta quando o ICIP médio é até 2,5; prioridade média quando o ICIP é até 3,5 ou há alta heterogeneidade; prioridade baixa quando o ICIP é superior a 3,5 e apresenta menor variação interna.</div>
+    <div class="actions">
+      <button class="btn primary" onclick="atualizarTerritorios()">Atualizar comparação</button>
+      <button class="btn green" onclick="exportarRankingCSV()">Exportar ranking CSV</button>
+    </div>
+    <div style="overflow:auto;margin-top:14px"><table>
+      <thead><tr><th>Ranking</th><th>Território</th><th>Registros</th><th>ICIP Médio</th><th>Classificação</th><th>Prioridade</th><th>Ponto crítico</th><th>Ponto forte</th><th>Heterogeneidade</th></tr></thead>
+      <tbody id="territorioBody"></tbody>
+    </table></div>
+  </div>
+  <div class="card"><h3>Gráfico de ICIP por território</h3><canvas id="territoryChart" width="900" height="430"></canvas></div>
+  <div class="card"><h3>Leitura territorial automática</h3><div id="territoryInsights" class="report">Cadastre registros para gerar análise territorial.</div></div>
+</section>
+
+<section id="relatorio" class="section">
+  <div class="card"><h2>Relatório Executivo</h2>
+    <div class="actions no-print">
+      <button class="btn primary" onclick="gerarRelatorio()">Atualizar relatório</button>
+      <button class="btn green" onclick="window.print()">Imprimir / Salvar PDF</button>
+      <button class="btn" onclick="copiarRelatorio()">Copiar texto</button>
+    </div>
+    <div id="report" class="report">Clique em “Atualizar relatório” para gerar a análise executiva.</div>
+  </div>
+</section>
+
+<section id="metodo" class="section">
+  <div class="grid two">
+    <div class="card"><h2>Dimensões do PIPP-Margens</h2>
+      <p><b>Reconhecimento sociocultural:</b> grau em que práticas locais são reconhecidas como expressão cultural e identitária.</p>
+      <p><b>Autonomia produtiva:</b> capacidade de sustentar produção e renda com menor dependência externa.</p>
+      <p><b>Sustentabilidade territorial:</b> alinhamento entre produção, território e meio ambiente.</p>
+      <p><b>Capacidade institucional local:</b> presença e articulação de suporte institucional.</p>
+      <p><b>Reflexividade institucional nas margens:</b> capacidade coletiva de interpretar e transformar condições institucionais.</p>
+    </div>
+    <div class="card"><h2>Escala de avaliação</h2>
+      <p><span class="badge b-red">1</span> Inexistente: ausência de evidências.</p>
+      <p><span class="badge b-yellow">2</span> Incipiente: presença pontual ou frágil.</p>
+      <p><span class="badge b-blue">3</span> Parcial: presença moderada, com limitações.</p>
+      <p><span class="badge b-green">4</span> Consolidado: presença consistente e reconhecida.</p>
+      <p><span class="badge b-purple">5</span> Transformador: impacto estruturante no território.</p>
+    </div>
+  </div>
+</section>
+
+<div class="footer-note">Dados salvos localmente no navegador deste computador. Para backup, use Exportar JSON. Este arquivo funciona offline, não depende do ChatGPT, internet, servidor ou localhost.</div>
+
+<div class="copyright-box">
+  <b>© 2026 – Laize Almeida de Oliveira</b><br>
+  <b>Produto técnico:</b> PIPP-Margens – Protocolo de Indicadores de Práticas Institucionais em Contextos Periféricos.<br>
+  Este aplicativo constitui produto técnico-científico original. É vedada a reprodução, distribuição, comercialização ou adaptação, total ou parcial, sem autorização prévia da autora.<br>
+  Uso permitido exclusivamente para fins acadêmicos, institucionais e de pesquisa, mediante citação da autora.
+</div>
+
+</main>
+<div class="author-fixed">PIPP-Margens © Laize Almeida de Oliveira</div>
+
+<script>
+'use strict';
+
+var DIMENSOES=[
+ {k:'reconhecimento',n:'Reconhecimento sociocultural',d:'Participação em feiras, inclusão em políticas culturais e valorização simbólica.'},
+ {k:'autonomia',n:'Autonomia produtiva',d:'Dependência de intermediários, canais próprios de venda e estabilidade de renda.'},
+ {k:'sustentabilidade',n:'Sustentabilidade territorial',d:'Uso de matéria-prima local, práticas sustentáveis e vínculo territorial.'},
+ {k:'capacidade',n:'Capacidade institucional local',d:'Assistência técnica, continuidade de políticas e articulação entre atores.'},
+ {k:'reflexividade',n:'Reflexividade institucional nas margens',d:'Espaços coletivos, identificação de problemas e estratégias de adaptação.'}
+];
+
+var KEY='pipp_margens_registros_v3_offline';
+var editIndex=null;
+
+function $(id){return document.getElementById(id)}
+function getRegs(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(e){return []}}
+function setRegs(r){localStorage.setItem(KEY,JSON.stringify(r))}
+function media(vals){if(!vals || !vals.length)return 0; return vals.reduce(function(a,b){return a+b},0)/vals.length}
+function fmt(n){return Number(n||0).toFixed(2).replace('.',',')}
+
+function classificacao(v){
+  if(!v || v<1.5)return 'Sem avaliação suficiente';
+  if(v<=2)return 'Baixa capacidade institucional periférica';
+  if(v<=3)return 'Capacidade institucional emergente';
+  if(v<=4)return 'Capacidade institucional em consolidação';
+  return 'Capacidade institucional transformadora';
+}
+
+function prioridade(v, hetero){
+  if(!v)return 'Sem dados';
+  if(v<=2.5)return 'Alta';
+  if(v<=3.5 || hetero>=2)return 'Média';
+  return 'Baixa';
+}
+
+function badge(v){
+  if(v<=2)return 'b-red';
+  if(v<=3)return 'b-yellow';
+  if(v<=4)return 'b-blue';
+  return 'b-green';
+}
+
+function priorityClass(p){
+  if(p==='Alta')return 'priority-alta';
+  if(p==='Média')return 'priority-media';
+  if(p==='Baixa')return 'priority-baixa';
+  return 'b-blue';
+}
+
+function dimStats(regs){
+  var out={};
+  DIMENSOES.forEach(function(d){
+    var vals=regs.map(function(r){return Number((r.scores||{})[d.k]||0)}).filter(function(v){return v>0});
+    if(vals.length){
+      var med=media(vals), mn=Math.min.apply(null,vals), mx=Math.max.apply(null,vals);
+      out[d.k]={media:med,min:mn,max:mx,variacao:mx-mn};
+    }else{
+      out[d.k]={media:0,min:0,max:0,variacao:0};
+    }
+  });
+  return out;
+}
+
+function dimMedias(regs){
+  var st=dimStats(regs), out={};
+  DIMENSOES.forEach(function(d){out[d.k]=st[d.k].media});
+  return out;
+}
+
+function initDims(){
+  var box=$('dims'); box.innerHTML='';
+  DIMENSOES.forEach(function(d){
+    var div=document.createElement('div');
+    div.className='dimrow';
+    div.innerHTML='<div><div class="dimtitle">'+d.n+'</div><div class="hint">'+d.d+'</div></div><div><label>Pontuação<select id="score_'+d.k+'"><option value="1">1</option><option value="2">2</option><option value="3" selected>3</option><option value="4">4</option><option value="5">5</option></select></label></div><div><label>Justificativa qualitativa<textarea id="just_'+d.k+'" placeholder="Descreva a evidência empírica que justifica a pontuação."></textarea></label></div>';
+    box.appendChild(div);
+  });
+}
+
+function salvarRegistro(){
+  var r={
+    territorio:$('territorio').value.trim(),
+    localidade:$('localidade').value.trim(),
+    data:$('data').value,
+    participante:$('participante').value.trim(),
+    responsavel:$('responsavel').value.trim(),
+    fonte:$('fonte').value,
+    obs:$('obs').value.trim(),
+    scores:{},
+    just:{}
+  };
+  if(!r.territorio){alert('Informe o território.');return}
+  DIMENSOES.forEach(function(d){
+    r.scores[d.k]=Number($('score_'+d.k).value);
+    r.just[d.k]=$('just_'+d.k).value.trim();
+  });
+  r.icip=media(Object.values(r.scores));
+  r.classificacao=classificacao(r.icip);
+  var regs=getRegs();
+  if(editIndex!==null){regs[editIndex]=r;editIndex=null}else{regs.push(r)}
+  setRegs(regs);
+  limparFormulario();
+  atualizarTudo();
+  showTab('dashboard');
+}
+
+function limparFormulario(){
+  $('territorio').value='';$('localidade').value='';$('data').value='';$('participante').value='';$('responsavel').value='';$('fonte').value='Entrevista';$('obs').value='';
+  DIMENSOES.forEach(function(d){$('score_'+d.k).value='3';$('just_'+d.k).value=''});
+  editIndex=null;
+}
+
+function preencherExemplo(){
+  $('territorio').value='Marajó';$('localidade').value='Muaná';$('data').value=new Date().toISOString().slice(0,10);$('participante').value='E01';$('responsavel').value='Equipe PIPP';$('fonte').value='Triangulação';
+  var vals={reconhecimento:4,autonomia:2,sustentabilidade:4,capacidade:3,reflexividade:4};
+  DIMENSOES.forEach(function(d){$('score_'+d.k).value=vals[d.k];$('just_'+d.k).value='Evidência registrada para '+d.n.toLowerCase()+', com base em falas, observação e documentos.'});
+  $('obs').value='Exemplo demonstrativo para teste do aplicativo.';
+}
+
+function editar(i){
+  var r=getRegs()[i]; if(!r)return; editIndex=i;
+  $('territorio').value=r.territorio;$('localidade').value=r.localidade;$('data').value=r.data;$('participante').value=r.participante;$('responsavel').value=r.responsavel;$('fonte').value=r.fonte;$('obs').value=r.obs;
+  DIMENSOES.forEach(function(d){$('score_'+d.k).value=r.scores[d.k];$('just_'+d.k).value=r.just[d.k]||''});
+  showTab('aplicacao');
+}
+
+function excluir(i){
+  if(confirm('Excluir este registro?')){
+    var regs=getRegs();regs.splice(i,1);setRegs(regs);atualizarTudo();
+  }
+}
+
+function apagarTudo(){
+  if(confirm('Apagar todos os registros salvos neste navegador?')){
+    setRegs([]);atualizarTudo();
+  }
+}
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+
+function atualizarTabela(){
+  var tb=$('tbody'), regs=getRegs(); tb.innerHTML='';
+  regs.forEach(function(r,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+(i+1)+'</td><td>'+(r.data||'—')+'</td><td>'+esc(r.territorio)+'</td><td>'+esc(r.localidade||'—')+'</td><td>'+esc(r.participante||'—')+'</td><td><b>'+fmt(r.icip)+'</b></td><td><span class="badge '+badge(r.icip)+'">'+r.classificacao+'</span></td><td><button class="btn" onclick="editar('+i+')">Editar</button> <button class="btn red" onclick="excluir('+i+')">Excluir</button></td>';
+    tb.appendChild(tr);
+  });
+}
+
+function atualizarDash(){
+  var regs=getRegs();
+  $('mRegs').textContent=regs.length;
+  var geral=media(regs.map(function(r){return r.icip}));
+  $('mIcip').textContent=fmt(geral);
+  $('mClass').textContent=regs.length?classificacao(geral):'Sem registros salvos';
+  var dm=dimStats(regs);
+  var keys=DIMENSOES.map(function(d){return d.k});
+  if(regs.length){
+    var forte=keys.reduce(function(a,b){return dm[a].media>=dm[b].media?a:b});
+    var crit=keys.reduce(function(a,b){return dm[a].media<=dm[b].media?a:b});
+    $('mForte').textContent=DIMENSOES.find(function(d){return d.k===forte}).n+' ('+fmt(dm[forte].media)+')';
+    $('mCritico').textContent=DIMENSOES.find(function(d){return d.k===crit}).n+' ('+fmt(dm[crit].media)+')';
+  }else{
+    $('mForte').textContent='—'; $('mCritico').textContent='—';
+  }
+  drawRadar(dm); drawBars(dm);
+  $('insights').textContent=gerarInsights(regs,dm,geral).join('\n\n');
+}
+
+function gerarInsights(regs,dm,geral){
+  if(!regs.length)return ['Cadastre registros para gerar insights automáticos.'];
+  var arr=[];
+  arr.push('ICIP geral: '+fmt(geral)+' — '+classificacao(geral)+'.');
+  var sorted=DIMENSOES.map(function(d){return {n:d.n,k:d.k,v:dm[d.k].media,varia:dm[d.k].variacao}}).sort(function(a,b){return a.v-b.v});
+  var crit=sorted[0], forte=sorted[sorted.length-1];
+  arr.push('Ponto crítico geral: '+crit.n+' ('+fmt(crit.v)+'). Essa dimensão exige prioridade porque pode limitar a efetividade das políticas públicas no território.');
+  arr.push('Ponto forte geral: '+forte.n+' ('+fmt(forte.v)+'). Essa dimensão pode ser utilizada como base para fortalecer as demais ações territoriais.');
+  sorted.forEach(function(x){
+    if(x.varia>=2)arr.push('Alta variação em '+x.n+' ('+fmt(x.varia)+'): há divergência relevante entre registros, indicando heterogeneidade territorial ou percepções distintas entre sujeitos.');
+  });
+  if(dm.autonomia.media<=2.5)arr.push('A autonomia produtiva baixa indica dependência de intermediários, instabilidade de renda ou fragilidade dos canais próprios de comercialização.');
+  if(dm.capacidade.media<=2.5)arr.push('A capacidade institucional local baixa sugere descontinuidade de políticas, pouca assistência técnica ou frágil articulação entre atores.');
+  if(dm.reflexividade.media>=4)arr.push('A reflexividade institucional nas margens aparece como força transformadora: os sujeitos interpretam suas condições e constroem estratégias próprias de adaptação e resistência.');
+  if(dm.reconhecimento.media>=4 && dm.autonomia.media<3)arr.push('Há reconhecimento simbólico, mas ele ainda não se converte plenamente em autonomia econômica. Essa diferença é relevante para planejamento público.');
+  return arr;
+}
+
+function agruparTerritorios(){
+  var regs=getRegs(), grupos={};
+  regs.forEach(function(r){
+    var t=(r.territorio||'Sem território').trim()||'Sem território';
+    if(!grupos[t])grupos[t]=[];
+    grupos[t].push(r);
+  });
+  var arr=[];
+  Object.keys(grupos).forEach(function(t){
+    var lista=grupos[t], dm=dimStats(lista), med=media(lista.map(function(r){return r.icip}));
+    var dims=DIMENSOES.map(function(d){return {k:d.k,n:d.n,media:dm[d.k].media,variacao:dm[d.k].variacao}});
+    dims.sort(function(a,b){return a.media-b.media});
+    var hetero=media(dims.map(function(x){return x.variacao}));
+    var pr=prioridade(med,hetero);
+    var indicePrioridade=(5-med)+(hetero*0.35);
+    arr.push({territorio:t,regs:lista.length,icip:med,classificacao:classificacao(med),prioridade:pr,indicePrioridade:indicePrioridade,pontoCritico:dims[0],pontoForte:dims[dims.length-1],heterogeneidade:hetero,dm:dm});
+  });
+  arr.sort(function(a,b){return b.indicePrioridade-a.indicePrioridade});
+  return arr;
+}
+
+function atualizarTerritorios(){
+  var tb=$('territorioBody'), arr=agruparTerritorios();
+  tb.innerHTML='';
+  if(!arr.length){
+    tb.innerHTML='<tr><td colspan="9">Nenhum registro disponível.</td></tr>';
+    $('territoryInsights').textContent='Cadastre registros para gerar análise territorial.';
+    drawTerritoryChart([]);
+    return;
+  }
+  arr.forEach(function(t,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td><b>'+(i+1)+'</b></td><td>'+esc(t.territorio)+'</td><td>'+t.regs+'</td><td><b>'+fmt(t.icip)+'</b></td><td><span class="badge '+badge(t.icip)+'">'+t.classificacao+'</span></td><td><span class="badge '+priorityClass(t.prioridade)+'">'+t.prioridade+'</span></td><td>'+t.pontoCritico.n+' ('+fmt(t.pontoCritico.media)+')</td><td>'+t.pontoForte.n+' ('+fmt(t.pontoForte.media)+')</td><td>'+fmt(t.heterogeneidade)+'</td>';
+    tb.appendChild(tr);
+  });
+  drawTerritoryChart(arr);
+  $('territoryInsights').textContent=gerarInsightsTerritoriais(arr).join('\n\n');
+}
+
+function gerarInsightsTerritoriais(arr){
+  if(!arr.length)return ['Cadastre registros para gerar análise territorial.'];
+  var linhas=[];
+  var alta=arr.filter(function(t){return t.prioridade==='Alta'});
+  var mediaP=arr.filter(function(t){return t.prioridade==='Média'});
+  var baixa=arr.filter(function(t){return t.prioridade==='Baixa'});
+  linhas.push('Foram identificados '+arr.length+' território(s) na base analisada.');
+  if(alta.length)linhas.push('Prioridade alta: '+alta.map(function(t){return t.territorio+' (ICIP '+fmt(t.icip)+')'}).join('; ')+'. Esses territórios demandam atenção imediata por apresentarem baixa capacidade institucional ou fragilidade territorial relevante.');
+  if(mediaP.length)linhas.push('Prioridade média: '+mediaP.map(function(t){return t.territorio+' (ICIP '+fmt(t.icip)+')'}).join('; ')+'. Esses territórios apresentam capacidade intermediária ou heterogeneidade interna que exige monitoramento.');
+  if(baixa.length)linhas.push('Prioridade baixa: '+baixa.map(function(t){return t.territorio+' (ICIP '+fmt(t.icip)+')'}).join('; ')+'. Esses territórios apresentam melhores condições relativas, podendo funcionar como referência para aprendizagem institucional.');
+  var hetero=arr.slice().sort(function(a,b){return b.heterogeneidade-a.heterogeneidade})[0];
+  if(hetero && hetero.heterogeneidade>=1.5)linhas.push('Maior heterogeneidade interna: '+hetero.territorio+' (variação média '+fmt(hetero.heterogeneidade)+'). Isso sugere que as experiências no território não são homogêneas e devem ser analisadas com atenção às diferenças internas.');
+  return linhas;
+}
+
+function gerarRelatorio(){
+  var regs=getRegs();
+  if(!regs.length){$('report').textContent='Nenhum registro disponível para análise. Cadastre ao menos um registro na aba Aplicação.';return;}
+  var dm=dimStats(regs), geral=media(regs.map(function(r){return r.icip})), territ=agruparTerritorios();
+  var linhas=[];
+  linhas.push('RELATÓRIO EXECUTIVO — PIPP-MARGENS');
+  linhas.push('');
+  linhas.push('1. SÍNTESE GERAL DO DIAGNÓSTICO');
+  linhas.push('Foram analisados '+regs.length+' registro(s), distribuídos em '+territ.length+' território(s). O ICIP geral foi de '+fmt(geral)+', classificado como '+classificacao(geral)+'.');
+  linhas.push('');
+  linhas.push('Esse resultado deve ser compreendido como uma síntese interpretativa do conjunto analisado, indicando o nível geral de capacidade institucional periférica observado a partir das evidências registradas.');
+  linhas.push('');
+  linhas.push('2. DESEMPENHO GERAL POR DIMENSÃO');
+  DIMENSOES.forEach(function(d){
+    linhas.push('- '+d.n+': média '+fmt(dm[d.k].media)+'; mínimo '+fmt(dm[d.k].min)+'; máximo '+fmt(dm[d.k].max)+'; variação '+fmt(dm[d.k].variacao)+'.');
+  });
+  linhas.push('');
+  linhas.push('3. LEITURA ANALÍTICA GERAL');
+  gerarInsights(regs,dm,geral).forEach(function(x){linhas.push('- '+x)});
+  linhas.push('');
+  linhas.push('4. ANÁLISE POR TERRITÓRIO');
+  var territoriosOrdenados=territ;
+  territoriosOrdenados.forEach(function(t,i){
+    linhas.push('');
+    linhas.push((i+1)+'. Território: '+t.territorio);
+    linhas.push('Registros considerados: '+t.regs+'.');
+    linhas.push('ICIP médio: '+fmt(t.icip)+' — '+t.classificacao+'.');
+    linhas.push('Prioridade automática: '+t.prioridade+' (índice de prioridade: '+fmt(t.indicePrioridade)+').');
+    linhas.push('Ponto crítico: '+t.pontoCritico.n+' ('+fmt(t.pontoCritico.media)+').');
+    linhas.push('Ponto forte: '+t.pontoForte.n+' ('+fmt(t.pontoForte.media)+').');
+    linhas.push('Heterogeneidade média: '+fmt(t.heterogeneidade)+'.');
+    if(t.prioridade==='Alta'){
+      linhas.push('Interpretação: o território apresenta maior urgência de atenção, pois reúne fragilidades institucionais relevantes ou baixo desempenho médio no ICIP. Recomenda-se priorizar ações de suporte institucional, fortalecimento da autonomia produtiva e monitoramento das dimensões críticas.');
+    }else if(t.prioridade==='Média'){
+      linhas.push('Interpretação: o território apresenta condição intermediária ou heterogeneidade interna relevante. Recomenda-se acompanhamento técnico, análise das diferenças entre registros e ações focalizadas nas dimensões de menor desempenho.');
+    }else{
+      linhas.push('Interpretação: o território apresenta melhor condição relativa no conjunto analisado. Pode funcionar como referência para aprendizagem institucional, sem dispensar monitoramento contínuo das dimensões críticas.');
+    }
+    linhas.push('Médias por dimensão no território:');
+    DIMENSOES.forEach(function(d){linhas.push('  - '+d.n+': '+fmt(t.dm[d.k].media)+' (variação: '+fmt(t.dm[d.k].variacao)+').')});
+  });
+  linhas.push('');
+  linhas.push('5. RANKING DE PRIORIDADE TERRITORIAL');
+  territ.forEach(function(t,i){linhas.push((i+1)+'. '+t.territorio+' — prioridade '+t.prioridade+'; ICIP '+fmt(t.icip)+'; ponto crítico: '+t.pontoCritico.n+'.')});
+  linhas.push('');
+  linhas.push('6. ORIENTAÇÃO PARA TOMADA DE DECISÃO');
+  linhas.push('A prioridade automática deve ser utilizada como apoio à decisão pública e não como substituto da análise qualitativa. A leitura final deve considerar as justificativas empíricas, as condições territoriais, a trajetória institucional local e a capacidade de resposta dos atores envolvidos.');
+  linhas.push('');
+  linhas.push('7. NOTA METODOLÓGICA');
+  linhas.push('O ICIP é uma síntese interpretativa construída a partir das pontuações atribuídas às dimensões do PIPP-Margens. O índice deve ser sempre analisado em conjunto com as evidências qualitativas e com o contexto territorial que originou os registros.');
+  linhas.push('');
+  linhas.push('-----------------------------------');
+  linhas.push('Autoria: Laize Almeida de Oliveira');
+  linhas.push('PIPP-Margens – Produto técnico-científico original');
+  linhas.push('Uso acadêmico autorizado. Reprodução, distribuição, adaptação ou comercialização proibidas sem autorização expressa da autora.');
+  $('report').textContent=linhas.join('\n');
+}
+function copiarRelatorio(){
+  gerarRelatorio();
+  if(navigator.clipboard){
+    navigator.clipboard.writeText($('report').textContent).then(function(){alert('Relatório copiado.')},function(){alert('Selecione e copie o texto manualmente.')});
+  }else alert('Selecione e copie o texto manualmente.');
+}
+
+function drawRadar(dm){
+  var c=$('radar'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+  var cx=w/2,cy=h/2+10,R=150;
+  ctx.font='13px Segoe UI';ctx.strokeStyle='#dbe3ef';ctx.fillStyle='#64748b';
+  for(var level=1;level<=5;level++){
+    ctx.beginPath();
+    DIMENSOES.forEach(function(d,i){
+      var ang=-Math.PI/2+i*2*Math.PI/DIMENSOES.length, r=R*level/5, x=cx+Math.cos(ang)*r, y=cy+Math.sin(ang)*r;
+      if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+    });
+    ctx.closePath();ctx.stroke();ctx.fillText(String(level),cx+5,cy-R*level/5);
+  }
+  DIMENSOES.forEach(function(d,i){
+    var ang=-Math.PI/2+i*2*Math.PI/DIMENSOES.length;
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.cos(ang)*R,cy+Math.sin(ang)*R);ctx.stroke();
+    var lx=cx+Math.cos(ang)*(R+55),ly=cy+Math.sin(ang)*(R+28);ctx.fillText(d.n.split(' ')[0],lx-30,ly);
+  });
+  ctx.beginPath();
+  DIMENSOES.forEach(function(d,i){
+    var v=(dm[d.k] && dm[d.k].media)||0,ang=-Math.PI/2+i*2*Math.PI/DIMENSOES.length,r=R*v/5,x=cx+Math.cos(ang)*r,y=cy+Math.sin(ang)*r;
+    if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+  });
+  ctx.closePath();ctx.fillStyle='rgba(37,99,235,.22)';ctx.fill();ctx.strokeStyle='#2563eb';ctx.lineWidth=3;ctx.stroke();ctx.lineWidth=1;
+}
+
+function drawBars(dm){
+  var c=$('bars'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+  var left=70,top=30,base=h-70,bw=70,gap=35;
+  ctx.font='13px Segoe UI';ctx.strokeStyle='#dbe3ef';ctx.fillStyle='#64748b';
+  for(var i=0;i<=5;i++){var y=base-(base-top)*i/5;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-25,y);ctx.stroke();ctx.fillText(String(i),35,y+4)}
+  DIMENSOES.forEach(function(d,i){
+    var v=(dm[d.k] && dm[d.k].media)||0,x=left+i*(bw+gap)+30,y=base-(base-top)*v/5;
+    ctx.fillStyle=v<=2?'#dc2626':v<=3?'#ca8a04':v<=4?'#2563eb':'#16a34a';
+    ctx.fillRect(x,y,bw,base-y);
+    ctx.fillStyle='#1f2937';ctx.fillText(fmt(v),x+15,y-8);
+    ctx.save();ctx.translate(x+10,base+15);ctx.rotate(-Math.PI/6);ctx.fillText(d.n.split(' ')[0],0,0);ctx.restore();
+  });
+}
+
+function drawTerritoryChart(arr){
+  var c=$('territoryChart'),ctx=c.getContext('2d'),w=c.width,h=c.height;ctx.clearRect(0,0,w,h);
+  if(!arr.length){ctx.font='16px Segoe UI';ctx.fillStyle='#64748b';ctx.fillText('Sem dados territoriais.',40,60);return;}
+  var left=80,top=35,base=h-80,right=30;
+  var bw=Math.max(35,Math.min(90,(w-left-right)/arr.length-18));
+  var gap=Math.max(12,((w-left-right)-(bw*arr.length))/(arr.length+1));
+  ctx.font='13px Segoe UI';ctx.strokeStyle='#dbe3ef';ctx.fillStyle='#64748b';
+  for(var i=0;i<=5;i++){var y=base-(base-top)*i/5;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right,y);ctx.stroke();ctx.fillText(String(i),40,y+4)}
+  arr.forEach(function(t,i){
+    var v=t.icip,x=left+gap+i*(bw+gap),y=base-(base-top)*v/5;
+    ctx.fillStyle=t.prioridade==='Alta'?'#dc2626':t.prioridade==='Média'?'#ca8a04':'#16a34a';
+    ctx.fillRect(x,y,bw,base-y);
+    ctx.fillStyle='#1f2937';ctx.fillText(fmt(v),x+5,y-8);
+    ctx.save();ctx.translate(x,base+18);ctx.rotate(-Math.PI/6);ctx.fillText(t.territorio,0,0);ctx.restore();
+  });
+}
+
+function exportarJSON(){download('pipp_registros.json',JSON.stringify({
+  autoria:'Laize Almeida de Oliveira',
+  produto:'PIPP-Margens',
+  aviso:'Uso acadêmico autorizado. Reprodução, comercialização, distribuição ou adaptação proibidas sem autorização expressa da autora.',
+  data_exportacao:new Date().toISOString(),
+  dados:getRegs()
+},null,2),'application/json')}
+function exportarCSV(){
+  var regs=getRegs();
+  var head=['data','territorio','localidade','participante','responsavel','fonte'].concat(DIMENSOES.map(function(d){return d.n})).concat(['ICIP','classificacao','observacoes']);
+  var rows=[['AUTORIA: Laize Almeida de Oliveira'],['PIPP-Margens – Uso acadêmico autorizado. Reprodução/comercialização proibidas sem autorização.'],[],head];
+  regs.forEach(function(r){rows.push([r.data,r.territorio,r.localidade,r.participante,r.responsavel,r.fonte].concat(DIMENSOES.map(function(d){return r.scores[d.k]})).concat([fmt(r.icip),r.classificacao,r.obs]))});
+  downloadCSV('pipp_registros.csv',rows);
+}
+
+function exportarRankingCSV(){
+  var arr=agruparTerritorios();
+  var rows=[['AUTORIA: Laize Almeida de Oliveira'],['PIPP-Margens – Ranking territorial. Reprodução/comercialização proibidas sem autorização.'],[],['ranking','territorio','registros','icip_medio','classificacao','prioridade','indice_prioridade','ponto_critico','ponto_forte','heterogeneidade']];
+  arr.forEach(function(t,i){rows.push([i+1,t.territorio,t.regs,fmt(t.icip),t.classificacao,t.prioridade,fmt(t.indicePrioridade),t.pontoCritico.n+' '+fmt(t.pontoCritico.media),t.pontoForte.n+' '+fmt(t.pontoForte.media),fmt(t.heterogeneidade)])});
+  downloadCSV('pipp_ranking_territorial.csv',rows);
+}
+
+function downloadCSV(name,rows){
+  var csv=rows.map(function(row){return row.map(function(v){return '"'+String(v||'').replace(/"/g,'""')+'"'}).join(';')}).join('\n');
+  download(name,csv,'text/csv;charset=utf-8');
+}
+function download(name,content,type){
+  var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type:type}));a.download=name;a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href)},500);
+}
+function importarJSON(ev){
+  var f=ev.target.files[0]; if(!f)return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{var data=JSON.parse(reader.result); if(!Array.isArray(data))throw Error('Formato inválido'); setRegs(data); atualizarTudo(); alert('Dados importados.')}
+    catch(e){alert('Não foi possível importar: '+e.message)}
+  };
+  reader.readAsText(f);
+}
+
+function showTab(id){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+  $(id).classList.add('active');
+  document.querySelectorAll('nav button').forEach(function(b){b.classList.toggle('active',b.dataset.tab===id)});
+  if(id==='relatorio')gerarRelatorio();
+  if(id==='territorios')atualizarTerritorios();
+}
+document.querySelectorAll('nav button').forEach(function(b){b.addEventListener('click',function(){showTab(b.dataset.tab)})});
+
+function atualizarTudo(){atualizarDash();atualizarTabela();atualizarTerritorios();gerarRelatorio()}
+initDims(); atualizarTudo();
+</script>
+
+<script>
+const APP_PASSWORD = "pipp2026";
+function unlockApp(){
+  const pass = document.getElementById("accessPassword").value;
+  if(pass === APP_PASSWORD){
+    document.getElementById("lockScreen").style.display = "none";
+    sessionStorage.setItem("pipp_auth","ok");
+  }else{
+    alert("Senha incorreta.");
+  }
+}
+document.addEventListener("DOMContentLoaded", function(){
+  if(sessionStorage.getItem("pipp_auth")==="ok"){
+    const lock = document.getElementById("lockScreen");
+    if(lock) lock.style.display = "none";
+  }
+  const input = document.getElementById("accessPassword");
+  if(input){
+    input.addEventListener("keydown", function(e){
+      if(e.key==="Enter") unlockApp();
+    });
+  }
+});
+document.addEventListener("contextmenu", function(event){ event.preventDefault(); });
+document.addEventListener("copy", function(e){
+  const txt = window.getSelection ? String(window.getSelection()) : "";
+  e.clipboardData.setData("text/plain", (txt ? txt + "\n\n" : "") + "Fonte: PIPP-Margens © Laize Almeida de Oliveira. Uso acadêmico autorizado. Reprodução/comercialização proibidas sem autorização.");
+  e.preventDefault();
+});
+</script>
+
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('./service-worker.js').catch(function(e){console.log('SW falhou', e)});
+  });
+}
+</script>
+
+</body>
+</html>
